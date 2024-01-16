@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador de enlace de WhatsApp</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     body {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background-color: #f8f8f8;
+      background-color: #3974EA;
       margin: 0;
       padding: 0;
       display: flex;
@@ -27,19 +28,26 @@
     h1 {
       text-align: center;
       color: #333;
+      font-size: 18px;
+      margin-bottom: 10px;
     }
     label {
       display: block;
-      margin: 10px 0;
+      margin: 15px 0 10px;
       color: #555;
     }
     input, textarea {
-      width: 100%;
+      width: calc(100% - 28px); /* Adjust here for more or less space */
       padding: 10px;
       margin: 5px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
       box-sizing: border-box;
+    }
+    .icon {
+      position: relative;
+      top: 4px;
+      margin-right: 8px;
     }
     button {
       width: 100%;
@@ -125,16 +133,16 @@
 
   <div id="container">
 
-    <h1>Intentos reiterados de compra</h1>
+    <h1>Generador de enlace de WhatsApp</h1>
 
-    <label for="nombreCliente">Nombre del Cliente:</label>
+    <label for="nombreCliente"><i class="fas fa-user icon"></i>Nombre del Cliente:</label>
     <input type="text" id="nombreCliente" placeholder="Ingrese el nombre del cliente">
 
-    <label for="numeroCelular">Número de celular:</label>
+    <label for="numeroCelular"><i class="fas fa-phone icon"></i>Número de celular:</label>
     <input type="text" id="numeroCelular" placeholder="Ingrese el número de celular" onkeyup="handleKeyPress(event)">
 
     <div class="switch-container">
-      <span class="switch-label">Mensaje Personalizado:</span>
+      <span class="switch-label"><i class="fas fa-pen icon"></i>Mensaje Personalizado:</span>
       <label class="switch">
         <input type="checkbox" id="switchMensaje">
         <span class="slider"></span>
@@ -149,6 +157,7 @@
 
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
   <script>
     document.getElementById("switchMensaje").addEventListener("change", function() {
       var mensajePersonalizado = document.getElementById("mensajePersonalizado");
