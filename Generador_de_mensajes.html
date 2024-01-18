@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin. Conversaciones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            background: linear-gradient(to bottom, #7B44F2, #653BBF);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .title-container {
+            background-color: #E4E9F2;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #000;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .icon {
+            margin-right: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+            text-align: left;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        #log-container {
+            margin-top: 20px;
+            max-width: 300px;
+            overflow: auto;
+            border: 1px solid #261E59;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #261E59;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #261E59;
+            padding: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+
+        <div class="title-container">
+            <h1>LUMOS MESSAGE GENERATOR</h1>
+        </div>
+
+        <label for="numero"><i class="fas fa-phone icon"></i>Número de WhatsApp:</label>
+        <input type="text" id="numero" placeholder="Número de teléfono">
+
+        <label for="nombre"><i class="fas fa-user icon"></i>Nombre de cliente:</label>
+        <input type="text" id="nombre" placeholder="Nombre de cliente">
+
+        <label for="pedido"><i class="fas fa-file-alt icon"></i>Número de pedido:</label>
+        <input type="text" id="pedido" placeholder="Número de pedido">
+
+        <p>Selecciona un tipo de mensaje:</p>
+
+        <select id="tipoMensaje">
+            <option value="Pedido listo para retirar">Pedido listo para retirar</option>
+            <option value="Solicitar comprobante de compra">Solicitar comprobante de compra</option>
+            <option value="Informar error en una compra">Informar error en una compra</option>
+            <option value="Recordar al cliente">Recordar al cliente</option>
+        </select>
+
+        <button onclick="generarEnlace()"><i class="fas fa-paper-plane icon"></i>Contactar</button>
+
+    </div>
+
+    <div id="log-container">
+        <h2 style="font-size: 16px;">Historial de mensajes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Número de pedido</th>
+                    <th>Tipo de mensaje enviado</th>
+                </tr>
+            </thead>
+            <tbody id="log-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // Función para generar un enlace y actualizar el historial de mensajes
+        function generarEnlace() {
+            var numeroTelefono = document.getElementById("numero").value;
+            var tipoMensaje = document.getElementById("tipoMensaje").value;
+            var nombreCliente = document.getElementById("nombre").value;
+            var numeroPedido = document.getElementById("pedido").value;
+
+            if (numeroTelefono && tipoMensaje && nombreCliente && numeroPedido) {
+                var mensaje;
+
+                switch (tipoMensaje) {
+                    case "Pedido listo para retirar":
+                        mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El palacio de la oportunidad para informarte que tu pedido #${numeroPedido} ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).\n\nCuando ingreses a nuestro local, solo avisa en la puerta que estás para retirar una compra hecha por la tienda online, y nuestro equipo te guiará hacia el área donde recibirás tu pedido.\n\nNuestro horario de atención es de lunes a sábados de 8 a 20hs y los domingos de 10 a 18hs.\n\n¡Esperamos que disfrutes al máximo de tu compra! Si necesitas más información, no dudes en contactarnos. ¡Muchas gracias!`;
+                        break;
+                    case "Solicitar comprobante de compra":
+                        mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Mi nombre es Mariana. Nos comunicamos de El palacio de la oportunidad por tu pedido #${numeroPedido} para solicitar el comprobante de transferencia de tu compra, lo cual nos permitirá finalizar tu pedido.\n\nSi tienes alguna pregunta o necesitas asistencia, no dudes en hacérmela saber. ¡Muchas gracias!`;
+                        break;
+                    case "Informar error en una compra":
+                        mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Soy Mariana, del equipo de ventas web de El palacio de la oportunidad. Nos comunicamos por tu pedido #${numeroPedido}.\n\nQuiero informarte que hemos tenido un pequeño inconveniente con la compra que realizaste. Lamentablemente, podemos cambiar el producto por algo similar que te guste o proceder con la devolución del dinero.\n\nAguardamos tu respuesta y agradecemos mucho tu comprensión. ¡Muchas gracias!`;
+                        break;
+                    case "Recordar al cliente":
+                        mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El palacio de la oportunidad por tu pedido #${numeroPedido}. Queremos recordarte que ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).`;
+                        break;
+                    default:
+                        break;
+                }
+
+                var enlace = "https://web.whatsapp.com/send?phone=54" + numeroTelefono + "&text=" + encodeURIComponent(mensaje);
+
+                // Agregar entrada al historial
+                agregarAlHistorial(numeroPedido, tipoMensaje);
+
+                // Abrir enlace en nueva pestaña
+                window.open(enlace, '_blank');
+            } else {
+                alert("Por favor, completa todos los campos y selecciona un tipo de mensaje.");
+            }
+        }
+
+        // Función para agregar una entrada al historial
+        function agregarAlHistorial(numeroPedido, tipoMensaje) {
+            var logBody = document.getElementById("log-body");
+            var newRow = logBody.insertRow();
+
+            var cellNumeroPedido = newRow.insertCell(0);
+            var cellTipoMensaje = newRow.insertCell(1);
+
+            cellNumeroPedido.textContent = numeroPedido;
+            cellTipoMensaje.textContent = tipoMensaje;
+        }
+    </script>
+
+</body>
+</html>
+
