@@ -193,7 +193,8 @@
                         break;
                 }
 
-                var enlace = "https://web.whatsapp.com/send?phone=54" + numeroTelefono + "&text=" + encodeURIComponent(mensaje);
+                // Cambio enlace para la aplicación de escritorio de WhatsApp
+                var enlace = `https://web.whatsapp.com/send?phone=54${numeroTelefono}&text=${encodeURIComponent(mensaje)}`;
 
                 // Agregar entrada al historial
                 agregarAlHistorial(numeroPedido, tipoMensaje);
@@ -220,4 +221,3 @@
 
 </body>
 </html>
-
