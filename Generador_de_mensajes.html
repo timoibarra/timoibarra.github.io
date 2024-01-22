@@ -8,10 +8,9 @@
     <style>
         body {
             font-family: 'Helvetica Neue', sans-serif;
-            background: linear-gradient(to bottom, #9B91D9, #706CD9);
+            background-color: #f4f4f4;
             margin: 0;
-            padding: 20px;
-            text-align: center;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -21,24 +20,21 @@
 
         #container {
             background-color: #fff;
-            border: 1px solid #ddd;
             border-radius: 10px;
             padding: 20px;
-            width: 300px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .title-container {
-            background-color: #E4E9F2;
+            background-color: #0070c9;
             border-radius: 5px;
             padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            color: #000;
-            font-size: 18px;
-            margin: 0;
+            color: #fff;
+            margin-bottom: 20px;
         }
 
         label {
@@ -51,11 +47,9 @@
             align-items: center;
         }
 
-        .icon {
-            margin-right: 10px;
-        }
-
-        input {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -65,24 +59,8 @@
             box-sizing: border-box;
         }
 
-        p {
-            margin-top: 20px;
-            font-size: 16px;
-            color: #333;
-            text-align: left;
-        }
-
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
         button {
+            width: 100%;
             padding: 8px 16px;
             font-size: 14px;
             color: #fff;
@@ -98,14 +76,15 @@
         }
 
         #log-container {
-            margin-top: 20px;
-            max-width: 300px;
+            max-width: 400px;
+            width: 100%;
             overflow: auto;
-            border: 1px solid #261E59;
+            border: 1px solid #ccc;
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            color: #261E59;
+            color: #555;
+            margin-top: 20px;
         }
 
         table {
@@ -115,7 +94,7 @@
         }
 
         th, td {
-            border: 1px solid #261E59;
+            border: 1px solid #ccc;
             padding: 8px;
             text-align: left;
             font-size: 14px;
@@ -127,28 +106,32 @@
     <div id="container">
 
         <div class="title-container">
-            <h1>LUMOS MESSAGE GENERATOR</h1>
+            <h1 style="margin: 0;">LUMOS MESSAGE GENERATOR</h1>
         </div>
 
-        <label for="numero"><i class="fas fa-phone icon"></i>Número de WhatsApp:</label>
+        <label for="numero">Número de WhatsApp:</label>
         <input type="text" id="numero" placeholder="Número de teléfono">
 
-        <label for="nombre"><i class="fas fa-user icon"></i>Nombre de cliente:</label>
+        <label for="nombre">Nombre de cliente:</label>
         <input type="text" id="nombre" placeholder="Nombre de cliente">
 
-        <label for="pedido"><i class="fas fa-file-alt icon"></i>Número de pedido:</label>
+        <label for="pedido">Número de pedido:</label>
         <input type="text" id="pedido" placeholder="Número de pedido">
 
-        <p>Selecciona un tipo de mensaje:</p>
-
-        <select id="tipoMensaje">
+        <label for="tipoMensaje">Selecciona un tipo de mensaje:</label>
+        <select id="tipoMensaje" onchange="mostrarMensajePersonalizado()">
             <option value="Pedido listo para retirar">Pedido listo para retirar</option>
             <option value="Solicitar comprobante de compra">Solicitar comprobante de compra</option>
             <option value="Informar error en una compra">Informar error en una compra</option>
             <option value="Recordar al cliente">Recordar al cliente</option>
         </select>
 
-        <button onclick="generarEnlace()"><i class="fas fa-paper-plane icon"></i>Contactar</button>
+        <div id="mensajePersonalizadoContainer" style="display: none;">
+            <label for="mensajePersonalizado">Mensaje personalizado:</label>
+            <textarea id="mensajePersonalizado" rows="4" placeholder="Ingresa tu mensaje personalizado"></textarea>
+        </div>
+
+        <button onclick="generarEnlace()">Contactar</button>
 
     </div>
 
@@ -166,25 +149,25 @@
     </div>
 
     <script>
-        // Función para generar un enlace y actualizar el historial de mensajes
         function generarEnlace() {
             var numeroTelefono = document.getElementById("numero").value;
             var tipoMensaje = document.getElementById("tipoMensaje").value;
             var nombreCliente = document.getElementById("nombre").value;
             var numeroPedido = document.getElementById("pedido").value;
+            var mensajePersonalizado = document.getElementById("mensajePersonalizado").value;
 
             if (numeroTelefono && tipoMensaje && nombreCliente && numeroPedido) {
                 var mensaje;
 
                 switch (tipoMensaje) {
                     case "Pedido listo para retirar":
-                        mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El palacio de la oportunidad para informarte que tu pedido #${numeroPedido} ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).\n\nCuando ingreses a nuestro local, solo avisa en la puerta que estás para retirar una compra hecha por la tienda online, y nuestro equipo te guiará hacia el área donde recibirás tu pedido.\n\nNuestro horario de atención es de lunes a sábados de 8 a 20hs y los domingos de 10 a 18hs.\n\n¡Esperamos que disfrutes al máximo de tu compra! Si necesitas más información, no dudes en contactarnos. ¡Muchas gracias!`;
+                        mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El palacio de la oportunidad por tu pedido #${numeroPedido}. Queremos recordarte que ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).`;
                         break;
                     case "Solicitar comprobante de compra":
                         mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Mi nombre es Mariana. Nos comunicamos de El palacio de la oportunidad por tu pedido #${numeroPedido} para solicitar el comprobante de transferencia de tu compra, lo cual nos permitirá finalizar tu pedido.\n\nSi tienes alguna pregunta o necesitas asistencia, no dudes en hacérmela saber. ¡Muchas gracias!`;
                         break;
                     case "Informar error en una compra":
-                        mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Soy Mariana, del equipo de ventas web de El palacio de la oportunidad. Nos comunicamos por tu pedido #${numeroPedido}.\n\nQuiero informarte que hemos tenido un pequeño inconveniente con la compra que realizaste. Lamentablemente, podemos cambiar el producto por algo similar que te guste o proceder con la devolución del dinero.\n\nAguardamos tu respuesta y agradecemos mucho tu comprensión. ¡Muchas gracias!`;
+                        mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Soy Mariana, del equipo de ventas web de El palacio de la oportunidad. Nos comunicamos por tu pedido #${numeroPedido}.\n\n${mensajePersonalizado}\n\nAguardamos tu respuesta y agradecemos mucho tu comprensión. ¡Muchas gracias!`;
                         break;
                     case "Recordar al cliente":
                         mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El palacio de la oportunidad por tu pedido #${numeroPedido}. Queremos recordarte que ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).`;
@@ -206,7 +189,6 @@
             }
         }
 
-        // Función para agregar una entrada al historial
         function agregarAlHistorial(numeroPedido, tipoMensaje) {
             var logBody = document.getElementById("log-body");
             var newRow = logBody.insertRow();
@@ -216,6 +198,17 @@
 
             cellNumeroPedido.textContent = numeroPedido;
             cellTipoMensaje.textContent = tipoMensaje;
+        }
+
+        function mostrarMensajePersonalizado() {
+            var tipoMensaje = document.getElementById("tipoMensaje").value;
+            var mensajePersonalizadoContainer = document.getElementById("mensajePersonalizadoContainer");
+
+            if (tipoMensaje === "Informar error en una compra") {
+                mensajePersonalizadoContainer.style.display = "block";
+            } else {
+                mensajePersonalizadoContainer.style.display = "none";
+            }
         }
     </script>
 
