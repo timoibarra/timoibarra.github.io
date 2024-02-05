@@ -124,6 +124,7 @@
             <option value="Solicitar comprobante de compra">Solicitar comprobante de compra</option>
             <option value="Informar error en una compra">Informar error en una compra</option>
             <option value="Recordar al cliente">Recordar al cliente</option>
+            <option value="Personalizado">Mensaje personalizado</option>
         </select>
 
         <div id="mensajePersonalizadoContainer" style="display: none;">
@@ -172,6 +173,9 @@
                     case "Recordar al cliente":
                         mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El palacio de la oportunidad por tu pedido #${numeroPedido}. Queremos recordarte que ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).`;
                         break;
+                    case "Personalizado":
+                        mensaje = mensajePersonalizado;
+                        break;
                     default:
                         break;
                 }
@@ -204,7 +208,7 @@
             var tipoMensaje = document.getElementById("tipoMensaje").value;
             var mensajePersonalizadoContainer = document.getElementById("mensajePersonalizadoContainer");
 
-            if (tipoMensaje === "Informar error en una compra") {
+            if (tipoMensaje === "Personalizado") {
                 mensajePersonalizadoContainer.style.display = "block";
             } else {
                 mensajePersonalizadoContainer.style.display = "none";
