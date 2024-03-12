@@ -123,6 +123,7 @@
             <option value="Pedido listo para retirar">Pedido listo para retirar</option>
             <option value="Solicitar comprobante de compra">Solicitar comprobante de compra</option>
             <option value="Informar error en una compra">Informar error en una compra</option>
+            <option value="Informar envio del pedido">Informar envio del pedido</option>
             <option value="Recordar al cliente">Recordar al cliente</option>
             <option value="Personalizado">Mensaje personalizado</option>
         </select>
@@ -173,6 +174,12 @@
                     case "Recordar al cliente":
                         mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El palacio de la oportunidad por tu pedido #${numeroPedido}. Queremos recordarte que ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).`;
                         break;
+                    case "Informar envio del pedido":
+    mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Soy Mariana, del equipo de ventas web de El palacio de la oportunidad. Nos comunicamos por tu pedido #${numeroPedido}.
+Queremos avisarte que en el día de hoy entre las 13 y 15hs va a pasar el cadete a entregarle su pedido. En caso de no estar en el domicilio el paquete se enviara a nuestro local (Corrientes 999. Esquina de Corrientes y San Luis) a la espera de ser retirado por usted o, en caso de venir otra persona, por favor especificar nombre y D.N.I de la misma.
+Aguardamos su respuesta. ¡Muchas gracias!`;
+    break;
+    
                     case "Personalizado":
                         mensaje = mensajePersonalizado;
                         break;
