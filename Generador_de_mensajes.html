@@ -124,7 +124,7 @@
             <option value="Solicitar comprobante de compra">Solicitar comprobante de compra</option>
             <option value="Informar error en una compra">Informar error en una compra</option>
             <option value="Informar envio del pedido">Informar envio del pedido</option>
-            <option value="Recordar al cliente">Recordar al cliente</option>
+            <option value="Recordar al cliente sobre su pedido">Recordar al cliente</option>
             <option value="Personalizado">Mensaje personalizado</option>
         </select>
 
@@ -171,7 +171,7 @@
                     case "Informar error en una compra":
                         mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Soy Mariana, del equipo de ventas web de El palacio de la oportunidad. Nos comunicamos por tu pedido #${numeroPedido}.\n\n${mensajePersonalizado}\n\nAguardamos tu respuesta y agradecemos mucho tu comprensión. ¡Muchas gracias!`;
                         break;
-                    case "Recordar al cliente":
+                    case "Recordar al cliente sobre su pedido":
                         mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El palacio de la oportunidad por tu pedido #${numeroPedido}. Queremos recordarte que ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).`;
                         break;
                     case "Informar envio del pedido":
