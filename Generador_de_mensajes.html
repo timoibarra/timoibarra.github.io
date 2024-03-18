@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMOS MESSAGE GENERATOR</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
     <style>
         body {
             font-family: 'Helvetica Neue', sans-serif;
@@ -35,6 +36,24 @@
             padding: 10px;
             color: #fff;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .download-button {
+            cursor: pointer;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .download-button:hover {
+            background-color: #218838;
         }
 
         label {
@@ -85,6 +104,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             color: #555;
             margin-top: 20px;
+            position: relative;
         }
 
         table {
@@ -98,6 +118,13 @@
             padding: 8px;
             text-align: left;
             font-size: 14px;
+        }
+
+        .download-button-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 10px;
         }
     </style>
 </head>
@@ -128,6 +155,12 @@
             <option value="Personalizado">Mensaje personalizado</option>
         </select>
 
+        <label for="enviadoPor">Enviado por:</label>
+        <select id="enviadoPor">
+            <option value="Mariana">Mariana</option>
+            <option value="Yanina">Yanina</option>
+        </select>
+
         <div id="mensajePersonalizadoContainer" style="display: none;">
             <label for="mensajePersonalizado">Mensaje personalizado:</label>
             <textarea id="mensajePersonalizado" rows="4" placeholder="Ingresa tu mensaje personalizado"></textarea>
@@ -144,19 +177,46 @@
                 <tr>
                     <th>Número de pedido</th>
                     <th>Tipo de mensaje enviado</th>
+                    <th>Enviado por</th>
                 </tr>
             </thead>
             <tbody id="log-body"></tbody>
         </table>
+        <div class="download-button-container">
+            <!-- Botón para descargar historial -->
+            <button class="download-button" onclick="descargarHistorial()">Descargar Historial</button>
+        </div>
+        <!-- Botón para reiniciar el historial de mensajes -->
+        <button onclick="confirmarReinicio()" style="width: 100%; background-color: #6c757d; color: #fff; margin-top: 10px;">Reiniciar Historial</button>
     </div>
 
     <script>
+        // Función para cargar el historial de mensajes desde el almacenamiento local al cargar la página
+        window.onload = function() {
+            cargarHistorial();
+        };
+
+        // Función para guardar el historial de mensajes en el almacenamiento local
+        function guardarHistorial() {
+            var logTable = document.getElementById("log-body").innerHTML;
+            localStorage.setItem("historialMensajes", logTable);
+        }
+
+        // Función para cargar el historial de mensajes desde el almacenamiento local
+        function cargarHistorial() {
+            var logTable = localStorage.getItem("historialMensajes");
+            if (logTable) {
+                document.getElementById("log-body").innerHTML = logTable;
+            }
+        }
+
         function generarEnlace() {
             var numeroTelefono = document.getElementById("numero").value;
             var tipoMensaje = document.getElementById("tipoMensaje").value;
             var nombreCliente = document.getElementById("nombre").value;
             var numeroPedido = document.getElementById("pedido").value;
             var mensajePersonalizado = document.getElementById("mensajePersonalizado").value;
+            var enviadoPor = document.getElementById("enviadoPor").value;
 
             if (numeroTelefono && tipoMensaje && nombreCliente && numeroPedido) {
                 var mensaje;
@@ -166,20 +226,19 @@
                         mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El Palacio de la Oportunidad por tu pedido #${numeroPedido}. Queremos recordarte que ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).`;
                         break;
                     case "Solicitar comprobante de compra":
-                        mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Mi nombre es Mariana. Nos comunicamos de El Palacio de la Oportunidad por tu pedido #${numeroPedido} para solicitar el comprobante de transferencia de tu compra, lo cual nos permitirá finalizar tu pedido. Recuerde que el comprobante debe ser presentado dentro de las 48hs. En caso contrario la compra será desestimada. \n\nSi tienes alguna pregunta o necesitas asistencia, no dudes en hacérmela saber. ¡Muchas gracias!`;
+                        mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Mi nombre es ${enviadoPor}. Nos comunicamos de El Palacio de la Oportunidad por tu pedido #${numeroPedido} para solicitar el comprobante de transferencia de tu compra, lo cual nos permitirá finalizar tu pedido. Recuerde que el comprobante debe ser presentado dentro de las 48hs. En caso contrario la compra será desestimada. \n\nSi tienes alguna pregunta o necesitas asistencia, no dudes en hacérmela saber. ¡Muchas gracias!`;
                         break;
                     case "Informar error en una compra":
-                        mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Soy Mariana, del equipo de ventas web de El Palacio de la Oportunidad. Nos comunicamos por tu pedido #${numeroPedido}.\n\n${mensajePersonalizado}\n\nAguardamos tu respuesta y agradecemos mucho tu comprensión. ¡Muchas gracias!`;
+                        mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Soy ${enviadoPor}, del equipo de ventas web de El Palacio de la Oportunidad. Nos comunicamos por tu pedido #${numeroPedido}.\n\n${mensajePersonalizado}\n\nAguardamos tu respuesta y agradecemos mucho tu comprensión. ¡Muchas gracias!`;
                         break;
                     case "Recordar al cliente sobre su pedido":
                         mensaje = `¡Hola ${nombreCliente}! Nos comunicamos de El Palacio de la Oportunidad por tu pedido #${numeroPedido}. Queremos recordarte que ya está listo para retirar en nuestro local.\n\nTe solicitamos que traigas tu D.N.I (o, en su defecto, la aplicación Mi Argentina) para poder entregarte tu compra. En caso de que otra persona venga en tu lugar, por favor, especifica su nombre y D.N.I (también debe traerlo).`;
                         break;
                     case "Informar envio del pedido":
-    mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Soy Mariana, del equipo de ventas web de El Palacio de la Oportunidad. Nos comunicamos por tu pedido #${numeroPedido}.
+                        mensaje = `¡Hola ${nombreCliente}! ¿Cómo estás? Soy ${enviadoPor}, del equipo de ventas web de El Palacio de la Oportunidad. Nos comunicamos por tu pedido #${numeroPedido}.
 Queremos avisarte que en el día de hoy entre las 13 y 15hs va a pasar el cadete a entregarle su pedido. En caso de no estar en el domicilio el paquete se enviara a nuestro local (Corrientes 999) a la espera de ser retirado por usted o, en caso de venir otra persona, por favor especificar nombre y D.N.I de la misma.
-Aguardamos su respuesta. ¡Muchas gracias!`;
-    break;
-    
+Aguardamos su respuesta. ¡Muchas gracias!`;
+                        break;
                     case "Personalizado":
                         mensaje = mensajePersonalizado;
                         break;
@@ -191,7 +250,10 @@ Aguardamos su respuesta. ¡Muchas gracias!`;
                 var enlace = `https://wa.me/54${numeroTelefono}?text=${encodeURIComponent(mensaje)}`;
 
                 // Agregar entrada al historial
-                agregarAlHistorial(numeroPedido, tipoMensaje);
+                agregarAlHistorial(numeroPedido, tipoMensaje, enviadoPor);
+
+                // Guardar historial
+                guardarHistorial();
 
                 // Abrir enlace en nueva pestaña
                 window.open(enlace, '_blank');
@@ -200,15 +262,17 @@ Aguardamos su respuesta. ¡Muchas gracias!`;
             }
         }
 
-        function agregarAlHistorial(numeroPedido, tipoMensaje) {
+        function agregarAlHistorial(numeroPedido, tipoMensaje, enviadoPor) {
             var logBody = document.getElementById("log-body");
             var newRow = logBody.insertRow();
 
             var cellNumeroPedido = newRow.insertCell(0);
             var cellTipoMensaje = newRow.insertCell(1);
+            var cellEnviadoPor = newRow.insertCell(2);
 
             cellNumeroPedido.textContent = numeroPedido;
             cellTipoMensaje.textContent = tipoMensaje;
+            cellEnviadoPor.textContent = enviadoPor;
         }
 
         function mostrarMensajePersonalizado() {
@@ -220,6 +284,25 @@ Aguardamos su respuesta. ¡Muchas gracias!`;
             } else {
                 mensajePersonalizadoContainer.style.display = "none";
             }
+        }
+
+        function confirmarReinicio() {
+            if (confirm("¿Estás seguro de que deseas reiniciar el historial de mensajes?")) {
+                reiniciarHistorial();
+            }
+        }
+
+        function reiniciarHistorial() {
+            var logBody = document.getElementById("log-body");
+            logBody.innerHTML = "";
+            // Guardar historial vacío
+            guardarHistorial();
+        }
+
+        function descargarHistorial() {
+            var logTable = document.getElementById("log-body");
+            var wb = XLSX.utils.table_to_book(logTable, {sheet: "Historial de mensajes"});
+            XLSX.writeFile(wb, "historial_mensajes.xlsx");
         }
     </script>
 
