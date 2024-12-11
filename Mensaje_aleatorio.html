@@ -11,6 +11,7 @@
             padding: 0;
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -34,9 +35,14 @@
             font-family: 'DM Serif Display', serif;
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
             text-align: center;
-            animation: fadeIn 2s ease-in-out;
-            opacity: 0;
-            transition: opacity 2s;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        img {
+            margin-top: 20px;
+            width: 150px;
+            height: auto;
+            animation: fadeIn 1.5s ease-in-out;
         }
 
         @keyframes fadeIn {
@@ -48,18 +54,12 @@
             }
         }
 
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
-        }
-
         @media (max-width: 768px) {
             h1 {
                 font-size: 2em;
+            }
+            img {
+                width: 120px;
             }
         }
     </style>
@@ -76,12 +76,12 @@
 
             let currentMessageIndex = 0;
             function showNextMessage() {
+                currentMessageIndex = (currentMessageIndex + 1) % messages.length;
                 header.style.opacity = '0';
                 setTimeout(() => {
-                    currentMessageIndex = (currentMessageIndex + 1) % messages.length;
                     header.textContent = messages[currentMessageIndex];
                     header.style.opacity = '1';
-                }, 1000);
+                }, 500);
             }
 
             document.body.addEventListener('touchstart', (event) => {
@@ -97,5 +97,6 @@
         Tu navegador no soporta la reproducción de video.
     </video>
     <h1>Frota la lámpara</h1>
+    <img src="https://timoibarra.github.io/Lampara.png" alt="Lámpara mágica">
 </body>
 </html>
