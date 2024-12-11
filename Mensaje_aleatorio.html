@@ -34,7 +34,9 @@
             font-family: 'DM Serif Display', serif;
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
             text-align: center;
-            animation: fadeIn 1.5s ease-in-out;
+            animation: fadeIn 2s ease-in-out;
+            opacity: 0;
+            transition: opacity 2s;
         }
 
         @keyframes fadeIn {
@@ -43,6 +45,15 @@
             }
             to {
                 opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
             }
         }
 
@@ -65,12 +76,12 @@
 
             let currentMessageIndex = 0;
             function showNextMessage() {
-                currentMessageIndex = (currentMessageIndex + 1) % messages.length;
                 header.style.opacity = '0';
                 setTimeout(() => {
+                    currentMessageIndex = (currentMessageIndex + 1) % messages.length;
                     header.textContent = messages[currentMessageIndex];
                     header.style.opacity = '1';
-                }, 500);
+                }, 1000);
             }
 
             document.body.addEventListener('touchstart', (event) => {
@@ -81,7 +92,7 @@
     </script>
 </head>
 <body>
-    <video id="video-background" autoplay muted loop>
+    <video id="video-background" autoplay muted loop playsinline>
         <source src="https://timoibarra.github.io/spaces%20background.mp4" type="video/mp4">
         Tu navegador no soporta la reproducción de video.
     </video>
