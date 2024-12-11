@@ -37,11 +37,11 @@
             text-align: center;
             opacity: 0;
             transform: scale(0.5);
-            animation: fadeInSmoke 1.5s ease-out forwards; /* Aceleramos la animación */
+            animation: fadeInMagic 1.5s ease-out forwards; /* Efecto de aparición mágica */
             z-index: 2;
         }
 
-        @keyframes fadeInSmoke {
+        @keyframes fadeInMagic {
             0% {
                 opacity: 0;
                 transform: scale(0.5) translateY(20px);
@@ -65,34 +65,6 @@
             height: auto;
             animation: fadeIn 2s ease-in-out;
             z-index: 1;
-        }
-
-        #smoke {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100vw;
-            height: 100vh;
-            background: url('https://timoibarra.github.io/smoke.png') center center no-repeat;
-            background-size: cover;
-            animation: smokeEffect 1s ease-in-out forwards; /* Activamos humo */
-            z-index: 3; /* Ponemos el humo por encima de todos los elementos */
-            transform: translate(-50%, -50%);
-        }
-
-        @keyframes smokeEffect {
-            0% {
-                opacity: 0;
-                transform: scale(1) translateY(10px);
-            }
-            50% {
-                opacity: 0.7;
-                transform: scale(1.1) translateY(-5px);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(1) translateY(10px);
-            }
         }
 
         @keyframes fadeIn {
@@ -123,17 +95,15 @@
                 "Mensaje de prueba 5"
             ];
             const header = document.querySelector('h1');
-            const smoke = document.getElementById('smoke');
 
             let currentMessageIndex = 0;
+
             function showNextMessage() {
                 currentMessageIndex = (currentMessageIndex + 1) % messages.length;
                 header.style.animation = 'fadeOut 1.5s ease-in-out';
-                smoke.style.animation = 'smokeEffect 1s ease-in-out forwards'; // Activamos humo cuando cambia el mensaje
                 setTimeout(() => {
                     header.textContent = messages[currentMessageIndex];
-                    header.style.animation = 'fadeInSmoke 1.5s ease-out forwards';
-                    smoke.style.animation = 'none'; // Restablecemos el humo después de la animación
+                    header.style.animation = 'fadeInMagic 1.5s ease-out forwards';
                 }, 1500);
             }
 
@@ -151,6 +121,5 @@
     </video>
     <h1>Frota la lámpara</h1>
     <img src="https://timoibarra.github.io/Lampara.png" alt="Lámpara mágica">
-    <div id="smoke"></div> <!-- Efecto de humo -->
 </body>
 </html>
