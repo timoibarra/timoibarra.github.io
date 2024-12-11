@@ -3,41 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fondo de Video</title>
+    <title>Shake to Reveal</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'DM Serif Display', serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             color: white;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
             overflow: hidden;
         }
-        h1 {
-            text-align: center;
-            font-size: 2em;
-            font-family: 'DM Serif Display', serif;
-            text-shadow: 1px 1px 1px black;
-            opacity: 0;
-            animation: fadeIn 2s forwards;
-        }
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.5em;
-            }
-        }
         video {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -45,46 +26,77 @@
             object-fit: cover;
             z-index: -1;
         }
+        h1 {
+            font-size: 2em;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <video autoplay muted loop>
+    <video id="backgroundVideo" autoplay muted loop playsinline>
         <source src="https://timoibarra.github.io/spaces%20background.mp4" type="video/mp4">
     </video>
-    <h1 id="message">Agita tu celular para descubrir un mensaje...</h1>
+
+    <h1 id="header">Agita tu celular para descubrir un mensaje...</h1>
 
     <script>
-        const messages = [
-            "mensaje de prueba 1", 
-            "Mensaje de prueba 2", 
-            "Mensaje de prueba 3", 
-            "Mensaje de prueba 4", 
-            "Mensaje de prueba 5"
-        ];
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.getElementById('header');
+            const messages = [
+                "Mensaje de prueba 1",
+                "Mensaje de prueba 2",
+                "Mensaje de prueba 3",
+                "Mensaje de prueba 4",
+                "Mensaje de prueba 5"
+            ];
 
-        let messageElement = document.getElementById("message");
-
-        // Función para cambiar el mensaje aleatorio con animación Fade In
-        function changeMessage() {
-            let randomMessage = messages[Math.floor(Math.random() * messages.length)];
-            messageElement.style.opacity = 0;  // Hacer que el mensaje actual desaparezca
-            setTimeout(() => {
-                messageElement.textContent = randomMessage;
-                messageElement.style.animation = "none";  // Reiniciar animación
-                messageElement.offsetHeight;  // Forzar la reactivación de la animación
-                messageElement.style.animation = "fadeIn 2s forwards";  // Aplicar animación de Fade In
-            }, 500);
-        }
-
-        // Detectar el movimiento del dispositivo (agitar)
-        window.addEventListener("devicemotion", (event) => {
-            const acceleration = event.accelerationIncludingGravity;
-            const threshold = 15; // Establecer el umbral de agitación
-
-            // Si la aceleración supera el umbral, cambiar el mensaje
-            if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold || Math.abs(acceleration.z) > threshold) {
-                changeMessage();
+            function requestMotionPermission() {
+                if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                    DeviceMotionEvent.requestPermission()
+                        .then(permissionState => {
+                            if (permissionState === 'granted') {
+                                window.addEventListener('devicemotion', handleMotion);
+                            }
+                        })
+                        .catch(console.error);
+                } else {
+                    window.addEventListener('devicemotion', handleMotion);
+                }
             }
+
+            function handleMotion(event) {
+                const acceleration = event.accelerationIncludingGravity;
+                const threshold = 15;
+
+                if (Math.abs(acceleration.x) > threshold ||
+                    Math.abs(acceleration.y) > threshold ||
+                    Math.abs(acceleration.z) > threshold) {
+                    displayRandomMessage();
+                }
+            }
+
+            function displayRandomMessage() {
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                header.style.opacity = 0;
+                setTimeout(() => {
+                    header.textContent = randomMessage;
+                    header.style.opacity = 1;
+                }, 500);
+            }
+
+            document.addEventListener('click', () => {
+                const video = document.getElementById('backgroundVideo');
+                if (video.paused) {
+                    video.play();
+                }
+                requestMotionPermission();
+            });
         });
     </script>
 </body>
