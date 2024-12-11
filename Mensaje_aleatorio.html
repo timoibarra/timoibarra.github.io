@@ -35,14 +35,15 @@
             font-family: 'DM Serif Display', serif;
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
             text-align: center;
-            animation: fadeIn 1.5s ease-in-out;
+            animation: fadeIn 2s ease-in-out;
+            opacity: 0;
         }
 
         img {
             margin-top: 20px;
-            width: 150px;
+            width: 200px;
             height: auto;
-            animation: fadeIn 1.5s ease-in-out;
+            animation: fadeIn 2s ease-in-out;
         }
 
         @keyframes fadeIn {
@@ -54,12 +55,21 @@
             }
         }
 
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2em;
             }
             img {
-                width: 120px;
+                width: 150px;
             }
         }
     </style>
@@ -77,11 +87,11 @@
             let currentMessageIndex = 0;
             function showNextMessage() {
                 currentMessageIndex = (currentMessageIndex + 1) % messages.length;
-                header.style.opacity = '0';
+                header.style.animation = 'fadeOut 1.5s ease-in-out';
                 setTimeout(() => {
                     header.textContent = messages[currentMessageIndex];
-                    header.style.opacity = '1';
-                }, 500);
+                    header.style.animation = 'fadeIn 1.5s ease-in-out';
+                }, 1500);
             }
 
             document.body.addEventListener('touchstart', (event) => {
