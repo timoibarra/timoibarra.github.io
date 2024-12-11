@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shake to Reveal</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <title>Interacción por Movimiento</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'DM Serif Display', serif;
+            font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            color: white;
             overflow: hidden;
+            background: black;
+            color: white;
+            text-align: center;
         }
+
         video {
             position: fixed;
             top: 0;
@@ -26,78 +29,105 @@
             object-fit: cover;
             z-index: -1;
         }
+
         h1 {
             font-size: 2em;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             opacity: 0;
-            animation: fadeIn 2s forwards;
+            transition: opacity 1s ease-in-out;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+        #enable-sensors {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        #enable-sensors:active {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <video id="backgroundVideo" autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline>
         <source src="https://timoibarra.github.io/spaces%20background.mp4" type="video/mp4">
+        Tu navegador no soporta videos.
     </video>
-
+    <button id="enable-sensors">Habilitar Sensores</button>
     <h1 id="header">Agita tu celular para descubrir un mensaje...</h1>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const header = document.getElementById('header');
-            const messages = [
-                "Mensaje de prueba 1",
-                "Mensaje de prueba 2",
-                "Mensaje de prueba 3",
-                "Mensaje de prueba 4",
-                "Mensaje de prueba 5"
-            ];
+        const header = document.getElementById('header');
+        const enableSensorsButton = document.getElementById('enable-sensors');
+        const messages = [
+            "Mensaje de prueba 1",
+            "Mensaje de prueba 2",
+            "Mensaje de prueba 3",
+            "Mensaje de prueba 4",
+            "Mensaje de prueba 5"
+        ];
+        let lastMessageIndex = -1;
 
-            function requestMotionPermission() {
-                if (typeof DeviceMotionEvent.requestPermission === 'function') {
-                    DeviceMotionEvent.requestPermission()
-                        .then(permissionState => {
-                            if (permissionState === 'granted') {
-                                window.addEventListener('devicemotion', handleMotion);
-                            }
-                        })
-                        .catch(console.error);
-                } else {
-                    window.addEventListener('devicemotion', handleMotion);
-                }
+        function showMessage(message) {
+            header.style.opacity = '0';
+            setTimeout(() => {
+                header.textContent = message;
+                header.style.opacity = '1';
+            }, 500);
+        }
+
+        function requestSensorAccess() {
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                DeviceMotionEvent.requestPermission().then(permissionState => {
+                    if (permissionState === 'granted') {
+                        enableShakeDetection();
+                    } else {
+                        alert("No se otorgó permiso para los sensores de movimiento.");
+                    }
+                }).catch(console.error);
+            } else {
+                enableShakeDetection();
             }
+        }
 
-            function handleMotion(event) {
-                const acceleration = event.accelerationIncludingGravity;
-                const threshold = 15;
+        function enableShakeDetection() {
+            let lastAcceleration = null;
+            const threshold = 15; // Ajustar según sea necesario
 
-                if (Math.abs(acceleration.x) > threshold ||
-                    Math.abs(acceleration.y) > threshold ||
-                    Math.abs(acceleration.z) > threshold) {
-                    displayRandomMessage();
+            window.addEventListener('devicemotion', (event) => {
+                const { x, y, z } = event.accelerationIncludingGravity;
+
+                if (lastAcceleration) {
+                    const deltaX = x - lastAcceleration.x;
+                    const deltaY = y - lastAcceleration.y;
+                    const deltaZ = z - lastAcceleration.z;
+
+                    const magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+
+                    if (magnitude > threshold) {
+                        let newIndex;
+                        do {
+                            newIndex = Math.floor(Math.random() * messages.length);
+                        } while (newIndex === lastMessageIndex);
+
+                        lastMessageIndex = newIndex;
+                        showMessage(messages[newIndex]);
+                    }
                 }
-            }
 
-            function displayRandomMessage() {
-                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-                header.style.opacity = 0;
-                setTimeout(() => {
-                    header.textContent = randomMessage;
-                    header.style.opacity = 1;
-                }, 500);
-            }
-
-            document.addEventListener('click', () => {
-                const video = document.getElementById('backgroundVideo');
-                if (video.paused) {
-                    video.play();
-                }
-                requestMotionPermission();
+                lastAcceleration = { x, y, z };
             });
-        });
+
+            enableSensorsButton.style.display = 'none';
+            showMessage("¡Sensores habilitados! Agita tu celular para descubrir un mensaje...");
+        }
+
+        enableSensorsButton.addEventListener('click', requestSensorAccess);
     </script>
 </body>
 </html>
