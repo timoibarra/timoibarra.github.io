@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fondo Estático</title>
+    <title>Fondo de Video</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-image: url('https://timoibarra.github.io/4-min.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -20,6 +16,7 @@
             height: 100vh;
             color: white;
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
         }
         h1 {
             text-align: center;
@@ -39,14 +36,26 @@
                 font-size: 1.5em;
             }
         }
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
+    <video autoplay muted loop>
+        <source src="https://timoibarra.github.io/spaces%20background.mp4" type="video/mp4">
+    </video>
     <h1 id="message">Agita tu celular para descubrir un mensaje...</h1>
 
     <script>
         const messages = [
-            "Mensaje de prueba 1", 
+            "mensaje de prueba 1", 
             "Mensaje de prueba 2", 
             "Mensaje de prueba 3", 
             "Mensaje de prueba 4", 
